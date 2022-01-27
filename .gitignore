@@ -127,3 +127,15 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+*.parquet
+temp_mnist
+hidden
+.vscode
+MiraBest_F.py
+*.png
+mnist.py
+*.hdf5
+*.gz
+dummy_download
+hidden
