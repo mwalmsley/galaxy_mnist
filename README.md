@@ -1,6 +1,6 @@
 # GalaxyMNIST
 
-Galaxy images labelled by morphology (shape). Aimed at ML development and teaching.
+Galaxy images labelled by morphology (shape). Aimed at ML debugging and teaching.
 
 Contains 10,000 images of galaxies (3x64x64), confidently labelled by Galaxy Zoo volunteers as belonging to one of four morphology classes.
 
