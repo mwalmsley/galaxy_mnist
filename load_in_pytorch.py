@@ -7,7 +7,8 @@ if __name__ == '__main__':
 
     dataset = GalaxyMNIST(
         root='/home/walml/repos/galaxy_mnist/download_root',
-        download=True
+        download=True,
+        train=True  # by default, or False for canonical test set
     )
 
     # this is always the canonical 80/20 train/test split

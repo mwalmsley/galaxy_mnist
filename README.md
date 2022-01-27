@@ -20,7 +20,8 @@ Simply use as with MNIST:
 
     dataset = GalaxyMNIST(
         root='/some/download/folder',
-        download=True
+        download=True,
+        train=True  # by default, or set False for test set
     )
 
 Access the images and labels - in a fixed "canonical" 80/20 train/test division - like so:
