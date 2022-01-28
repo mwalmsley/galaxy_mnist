@@ -4,7 +4,7 @@ import torch
 import h5py
 from sklearn import model_selection
 
-from mnist import MNIST
+from torchvision.datasets.mnist import MNIST
 
 
 class GalaxyMNIST(MNIST):
