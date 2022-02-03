@@ -10,7 +10,7 @@ Contains 10,000 images of galaxies (3x64x64), confidently labelled by Galaxy Zoo
     pip install -e galaxy_mnist
 
 The only dependencies are `pandas`, `scikit-learn`, and `h5py` (for .hdf5 support).
-(py)`torch` is required but not specified as a dependency, because you likely already have it and may require a very specific version (e.g. from conda, AWS-optimised, etc).
+(py)`torch` is required and **must be at least 1.9.1** but not specified as a dependency, because you likely already have it and may require a very specific version (e.g. from conda, AWS-optimised, etc).
 
 ## Use
 
@@ -32,7 +32,7 @@ You can also divide the data according to your own to your own preferences with 
 
     (custom_train_images, custom_train_labels), (custom_test_images, custom_test_labels) = dataset.load_custom_data(test_size=0.8, stratify=True) 
 
-See `load_in_pytorch.py` for a working example.
+See `load_in_pytorch.py` for a working example. For debugging help, see the FAQ section below.
 
 ## Dataset Details
 
@@ -54,3 +54,21 @@ You can see the exact choices made to select the galaxies and labels under the `
 If you use this dataset, please cite [Galaxy Zoo DECaLS](https://ui.adsabs.harvard.edu/abs/2022MNRAS.509.3966W/abstract), the data release paper from which the labels are drawn. Please also acknowledge the DECaLS survey (see the linked paper for an example).
 
 You can find the original volunteer votes (and images) on Zenodo [here](https://doi.org/10.5281/zenodo.4196266).
+
+## Help / FAQ
+
+---
+
+Q: Error: "No such file or directory: `...train-images-idx3-ubyte`
+
+A: Update pytorch/torchvision (to at least 1.9.1). GalaxyMNIST is a subclass of `torchvision.datasets.mnist` and assumes this file is up-to-date.
+
+---
+
+Q: Error: `galaxy-mnist is not a valid editable requirement. It should either be a path to a local project or a VCS URL (beginning with svn+, git+, hg+, or bzr+).`
+
+A: Check you are pointing `pip install -e galaxy_mnist` at the folder where you cloned the repo. For example, the error above is caused by mistakenly doing `pip install -e galaxy-mnist` with a `-` instead of a `_`.
+
+---
+
+If you're still having trouble, please raise an issue on GitHub or reach out directly to [michael.walmsley@manchester.ac.uk](emailto:michael.walmsley@manchester.ac.uk).
