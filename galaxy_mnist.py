@@ -1,7 +1,10 @@
 import os
+from typing import Tuple, Any
 
 import torch
 import h5py
+import numpy as np
+from PIL import Image
 from sklearn import model_selection
 
 from torchvision.datasets.mnist import MNIST
@@ -72,7 +75,32 @@ class GalaxyMNIST(MNIST):
         return images, targets
 
 
-    def load_custom_data(self, test_size=0.2, stratify=False, random_state=None):
+    def __getitem__(self, index: int) -> Tuple[Any, Any]:
+        """
+        Copied from MNIST, except mode='P' not 'L' as it's RGB colour
+        Args:
+            index (int): Index
+
+        Returns:
+            tuple: (image, target) where target is index of the target class.
+        """
+        img, target = self.data[index], int(self.targets[index])
+
+        # doing this so that it is consistent with all other datasets
+        # to return a PIL Image
+
+        img = Image.fromarray(img.numpy(), mode='RGB')
+
+        if self.transform is not None:
+            img = self.transform(img)
+
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+
+        return img, target
+
+
+    def load_custom_data(self, test_size=0.2, stratify=False, random_state=42):
         """
         Load GalaxyMNIST in a different way to the canonical GalaxyMNIST() (which is GalaxyMNIST._load_data())
         Note - has no effect on GalaxyMNIST class itself e.g. self.data, self.targets, which are always canonical.
@@ -109,6 +137,12 @@ class GalaxyMNIST(MNIST):
             train_images, train_labels, test_images, test_labels = all_images[train_indices], all_labels[train_indices], all_images[test_indices], all_labels[test_indices]
         else:
             train_images, train_labels, test_images, test_labels = model_selection.train_test_split(all_images, all_labels, test_size=test_size)
+        
+
+        if self.train:
+            self.data, self.targets = (train_images, train_labels)
+        else:
+            self.data, self.targets = (test_images, test_labels)
 
         return (train_images, train_labels), (test_images, test_labels)
 

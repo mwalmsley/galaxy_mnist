@@ -30,7 +30,9 @@ Access the images and labels - in a fixed "canonical" 80/20 train/test division 
 
 You can also divide the data according to your own to your own preferences with `load_custom_data`:
 
-    (custom_train_images, custom_train_labels), (custom_test_images, custom_test_labels) = dataset.load_custom_data(test_size=0.8, stratify=True) 
+    (custom_train_images, custom_train_labels), (custom_test_images, custom_test_labels) = dataset.load_custom_data(test_size=0.8, stratify=True)
+
+When you request either dataset[0] or datset.data, dataset.targets, you will recieve data according to whichever method you last called - either init or load_custom_data. 
 
 See `load_in_pytorch.py` for a working example. For debugging help, see the FAQ section below.
 
