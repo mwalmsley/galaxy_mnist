@@ -15,6 +15,9 @@ class GalaxyMNIST(MNIST):
 
     Based on MNIST/FashionMNIST torchvision datasets.
 
+    self.data (self.targets) is uint8 torch tensors of labels  (targets)
+    self.__getitem__ returns (PIL image, torch uint8 target) by indexing self.data
+
     Args:
         root (string): Root directory of dataset where ``GalaxyMNIST/raw/train_dataset.hdf5``
             and  ``GalaxyMNIST/raw/test_dataset.hdf5`` exist.
@@ -67,7 +70,7 @@ class GalaxyMNIST(MNIST):
         To make your own tweaks (e.g. set a different train-test split, use ``load_custom_data``)       
 
         Returns:
-            images: torch uint8 tensor like NCHW, 8000 train images or 2000 test images
+            images: NHWC PIL images, 8000 train images or 2000 test images
             targets: torch uint64 tensor like N, 0-3 integer-encoded classes (see GalaxyMNIST.classes), similarly
         """
         dataset_file = f"{'train' if self.train else 'test'}_dataset.hdf5"
@@ -77,19 +80,17 @@ class GalaxyMNIST(MNIST):
 
     def __getitem__(self, index: int) -> Tuple[Any, Any]:
         """
-        Copied from MNIST, except mode='P' not 'L' as it's RGB colour
+        Copied from MNIST, except mode='RGB' not 'L' as it's RGB colour
         Args:
             index (int): Index
 
         Returns:
-            tuple: (image, target) where target is index of the target class.
+            tuple: (image, target) image is NHWC PIL image and target is index of the target class.
         """
-        img, target = self.data[index], int(self.targets[index])
+        img, target = self.data[index], int(self.targets[index])  # CHW convention
 
-        # doing this so that it is consistent with all other datasets
-        # to return a PIL Image
-
-        img = Image.fromarray(img.numpy(), mode='RGB')
+        # will return PIL image, as per mnist dataset. Transpose back to HWC before fromarray converts to PIL.
+        img = Image.fromarray(img.numpy().transpose(1, 2, 0), mode='RGB')
 
         if self.transform is not None:
             img = self.transform(img)
@@ -164,7 +165,6 @@ def read_dataset_file(path: str) -> torch.Tensor:
         images = f['images'][:]
         # images are saved as NHWC convention
         # (numpy/matplotlib being the tiebreaker for pytorch vs tensorflow)
-        # reorder axis to NCHW for pytorch convention
         images = torch.from_numpy(images).type(torch.uint8).permute(0, 3, 1, 2)
         assert images.ndimension() == 4
 
