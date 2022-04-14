@@ -40,8 +40,8 @@ class GalaxyMNIST(MNIST):
     # don't bother with md5 until dataset definitely not changing? just set None
     # https://github.com/pytorch/vision/blob/main/torchvision/datasets/utils.py#L416
     resources = [
-        ("train_dataset.hdf5.gz", None),  # 'e408ae294e9b975482dc1abffeb373a6'
-        ("test_dataset.hdf5.gz", None)
+        ("train_dataset.hdf5.gz", 'e408ae294e9b975482dc1abffeb373a6'),
+        ("test_dataset.hdf5.gz", '7a940e4cea64a8b7cb60339098f74490')
     ]
 
     classes = ["smooth_round", "smooth_cigar", "edge_on_disk", "unbarred_spiral"]
