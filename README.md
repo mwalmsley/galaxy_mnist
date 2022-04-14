@@ -10,7 +10,9 @@ Contains 10,000 images of galaxies (3x64x64), confidently labelled by Galaxy Zoo
     pip install -e galaxy_mnist
 
 The only dependencies are `pandas`, `scikit-learn`, and `h5py` (for .hdf5 support).
-(py)`torch` is required and **must be at least 1.9.1** but not specified as a dependency, because you likely already have it and may require a very specific version (e.g. from conda, AWS-optimised, etc).
+(py)`torch` and torchvision are required but not specified as a dependency, because you likely already have it and may require a very specific version (e.g. from conda, AWS-optimised, etc).
+
+`torch` **must be at least 1.9.1**. Currently tested on `torch 1.10.2` and `torchvision 0.11.3`.
 
 ## Use
 
