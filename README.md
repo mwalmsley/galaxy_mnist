@@ -2,7 +2,7 @@
 
 Galaxy images labelled by morphology (shape). Aimed at ML debugging and teaching.
 
-Contains 10,000 images of galaxies (3x64x64), confidently labelled by Galaxy Zoo volunteers as belonging to one of four morphology classes.
+Contains 10,000 images of galaxies (either 3x64x64 or 3x224x224), confidently labelled by Galaxy Zoo volunteers as belonging to one of four morphology classes.
 
 ## Installation
 
@@ -20,6 +20,7 @@ Simply use as with MNIST:
 
     from galaxy_mnist import GalaxyMNIST
 
+    # 64 pixel images
     dataset = GalaxyMNIST(
         root='/some/download/folder',
         download=True,
@@ -36,7 +37,16 @@ You can also divide the data according to your own to your own preferences with 
 
 When you request either dataset[0] or datset.data, dataset.targets, you will recieve data according to whichever method you last called - either init or load_custom_data. 
 
+(New: For 224 pixel images, import and use GalaxyMNISTHighrez instead).
+
+    from galaxy_mnist import GalaxyMNISTHighrez
+
+    # 224 pixel images
+    dataset = GalaxyMNISTHighrez(...
+
+
 See `load_in_pytorch.py` for a working example. For debugging help, see the FAQ section below.
+
 
 ## Dataset Details
 

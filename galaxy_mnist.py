@@ -1,12 +1,14 @@
 import os
+import logging
 from typing import Tuple, Any
 
 import torch
 import h5py
-import numpy as np
 from PIL import Image
 from sklearn import model_selection
 
+from urllib.error import URLError
+from torchvision.datasets.utils import download_and_extract_archive, download_url
 from torchvision.datasets.mnist import MNIST
 
 
@@ -32,19 +34,51 @@ class GalaxyMNIST(MNIST):
             target and transforms it.
     """
 
-    # simply overrides mirrors, resources, classes
+    # simply overrides resources, classes
 
-    mirrors = ["http://www.jb.man.ac.uk/research/MiraBest/MiraBest_F/"]
+    # mirrors option removed, use my own download func (very similar - see docstring)
 
     # check_integrity will skip md5 check if None
     # don't bother with md5 until dataset definitely not changing? just set None
     # https://github.com/pytorch/vision/blob/main/torchvision/datasets/utils.py#L416
     resources = [
-        ("train_dataset.hdf5.gz", 'e408ae294e9b975482dc1abffeb373a6'),
-        ("test_dataset.hdf5.gz", '7a940e4cea64a8b7cb60339098f74490')
+        ('https://dl.dropboxusercontent.com/s/5a14de0o7slyif9/train_dataset.hdf5.gz', 'e408ae294e9b975482dc1abffeb373a6'),
+        ('https://dl.dropboxusercontent.com/s/5rza12nn24cwd2k/test_dataset.hdf5.gz', '7a940e4cea64a8b7cb60339098f74490')
     ]
 
     classes = ["smooth_round", "smooth_cigar", "edge_on_disk", "unbarred_spiral"]
+
+
+    def download(self) -> None:
+        """
+        Download the data if it doesn't exist already.
+
+        Modified from MNIST to remove {mirror}{filename} setup which doesn't work well with Dropbox
+        (dropbox urls like https://dl.dropboxusercontent.com/s/xenuo0ekgyi10ru/train_dataset.hdf5.gz
+        will ignore the final part and always download the file matching that hash).
+        I also use almost this exact code in pytorch-galaxy-datasets (pasted as lazy)
+        """
+
+        if self._check_exists():
+            return
+
+        # MNIST pattern expects {root}/raw directory
+        os.makedirs(self.raw_folder, exist_ok=True)
+
+        # download files
+        for url, md5 in self.resources:
+            filename = os.path.basename(url)
+            try:
+                logging.info(f"Downloading {url}")
+                if url.endswith('.tar.gz') or url.endswith('.hdf5.gz') or url.endswith('.zip'):
+                    download_and_extract_archive(
+                        url, download_root=self.raw_folder, filename=filename, md5=md5)
+                else:  # don't try to extract archive, just download
+                    download_url(url, root=self.raw_folder, filename=filename, md5=md5)
+            except URLError as error:
+                logging.info(f"Failed to download (trying next):\n{error}")
+                continue
+
 
 
     def _check_legacy_exist(self):
@@ -147,6 +181,15 @@ class GalaxyMNIST(MNIST):
 
         return (train_images, train_labels), (test_images, test_labels)
 
+
+class GalaxyMNISTHighrez(GalaxyMNIST):
+
+    resources = [
+        ("https://dl.dropboxusercontent.com/s/xenuo0ekgyi10ru/train_dataset.hdf5.gz", '3391dcddac14d5b4055db73fb600ae63'),
+        ("https://dl.dropboxusercontent.com/s/lczri4sb4bbcgyh/test_dataset.hdf5.gz", 'fb272c4e94000b4d99a09d638977b0b9')
+    ]
+    # otherwise identical to GalaxyMNIST (should be exactly the same galaxies). 
+    # Just pointing at hdf5's with differently resized images.
 
 
 def read_dataset_file(path: str) -> torch.Tensor:

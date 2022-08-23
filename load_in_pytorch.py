@@ -6,10 +6,17 @@ from galaxy_mnist import GalaxyMNIST
 if __name__ == '__main__':
 
     dataset = GalaxyMNIST(
-        root='/home/walml/repos/galaxy_mnist/download_root',
+        root='/home/walml/repos/galaxy_mnist/download_root',  # replace with your desired download folder
         download=True,
-        train=True  # by default, or False for canonical test set
+        train=True,  # by default, or False for canonical test set
     )
+
+    """There is also a 'highrez' (aka 224x224 pixel) version, with the same galaxies"""
+    # dataset = GalaxyMNISTHighrez(
+    #     root='/home/walml/repos/galaxy_mnist/download_root_hirez',
+    #     download=True,
+    #     train=True,
+    # )
 
     # this is always the canonical 80/20 train/test split
     images = dataset.data

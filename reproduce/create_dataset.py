@@ -48,12 +48,12 @@ def construct_integer_labels(names_of_classes):
     return np.array([name_to_int[name] for name in names_of_classes]).astype(np.uint8)
 
 
-def save_galaxy_dataset(df_name, df, save_dir):
+def save_galaxy_dataset(df_name, df, save_dir, resized_size):
         dataset_hdf5_loc = os.path.join(save_dir, f'{df_name}_dataset.hdf5')
         dataset_gz_loc = dataset_hdf5_loc + '.gz'
 
         # NHWC format
-        images = np.stack([load_image(loc) for loc in df['jpeg_loc']], axis=0)
+        images = np.stack([load_image('/run/'+ loc, resized_size=resized_size) for loc in df['jpeg_loc']], axis=0)
         print(images.shape, images.dtype)  # should be uint8
 
         # write to .hdf5
@@ -89,7 +89,8 @@ if __name__ == '__main__':
     df = df[df['summary'].isin(["smooth_round", "unbarred_spiral", "smooth_cigar", "edge_on_disk"])]
     print('Has final label: ', len(df))
 
-    save_dir = '/home/walml/repos/galaxy_mnist/hidden'
+    # save_dir = '/home/walml/repos/galaxy_mnist/hidden_64px'
+    save_dir = '/home/walml/repos/galaxy_mnist/hidden/hidden_224px'
 
     df['integer_label'] = construct_integer_labels(df['summary'])
     print(df['integer_label'].value_counts())
@@ -122,4 +123,5 @@ if __name__ == '__main__':
 
     for df_name, df in [('train', train_df), ('test', test_df)]:
 
-        save_galaxy_dataset(df_name, df, save_dir)
+        # save_galaxy_dataset(df_name, df, save_dir, resized_size=64)
+        save_galaxy_dataset(df_name, df, save_dir, resized_size=224)
