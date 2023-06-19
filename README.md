@@ -47,6 +47,8 @@ When you request either dataset[0] or datset.data, dataset.targets, you will rec
 
 See `load_in_pytorch.py` for a working example. For debugging help, see the FAQ section below.
 
+Like MNIST, the data type is `uint8`. You may wish to convert to `float` before doing any math.
+
 
 ## Dataset Details
 
